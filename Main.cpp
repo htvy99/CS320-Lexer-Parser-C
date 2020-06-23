@@ -18,87 +18,94 @@ int main() {
 	ifstream fin;
 	string s;
 
-	fin.open("program.txt");
+	fin.open("test.txt");
 	if (!fin.is_open()) {
 		cout << "error while opening the file\n";
 		exit(0);
 	}
 
+	/****************************************************** Lexer **************************************************/
+	word newWord;
+	word par;
+	bool isFinal = false;
+	bool compiled = true;
+
 	while (!fin.eof()) {
-		word newWord;
-		while (fin >> newWord.content)
+		while (fin >> newWord.content && compiled == true)
 		{
-			if (newWord.content.find(';') != std::string::npos || newWord.content.find(',') != std::string::npos) {
+			if (newWord.content.find(';') != std::string::npos) {
+				isFinal = true;
+				//compiled = true;
 				newWord.content.pop_back();
-				sentences.push_back(newWord);
-				lines.push_back(sentences);
-				sentences.clear();
 			}
-			else {
-				sentences.push_back(newWord);
-			}
-			//cout << newWord.content << " ";
+			//Check lpar (
+			if (newWord.content.find("(") != string::npos) {
+				//push ( into sentence as a separate element
+				par.content = "(";
+				par.type = 6;
+				sentences.push_back(par);
 
-			//Check keyword
-			for (int i = 0; i < 56; ++i) {
-				if (newWord.content == keywords[i]) {
-					newWord.type = 1;
-				}
+				//remove ( from newWord
+				newWord.content.erase(newWord.content.begin() + newWord.content.find("("));
+				//cout << newWord.content << endl;
 			}
 
-			//Check number
-			int tmp = 0;
-			for (int i = 0; i < newWord.content.length(); ++i) {
-				if (isdigit(newWord.content[i])) {
-					++tmp;
-				}
+			//Check rpar )
+			if (newWord.content.find(")") != string::npos) {
+				//push ) into sentence as a separate element
+				par.content = ")";
+				par.type = 7;
+
+				//remove ( from newWord
+				newWord.content.erase(newWord.content.begin() + newWord.content.find(")"));
 			}
-			if (tmp == newWord.content.length()) {
-				newWord.type = 3;
-				tmp = 0;
+
+			newWord = checkType(newWord);
+
+			if (newWord.type == 0) {
+				/*for (int i = 0; i < operatorSize; ++i) {
+					if (newWord.content.find(operators[i])) {
+
+					}
+				}*/
+				cout << "Compiled error\n";
+				compiled = false;
+				break;
 			}
 			
-			//Check operator
-			for (int i = 0; i < 12; ++i) {
-				if (newWord.content == operators[i]) {
-					newWord.type = 4;
-				}
+			sentences.push_back(newWord);
+			if (par.content == ")") {
+				sentences.push_back(par);
 			}
-
-
+			newWord.type = 0;
+			newWord.content = "";
+			par.content = "";
+			par.type = 0;
+			if (isFinal == true) {
+				lines.push_back(sentences);
+				sentences.clear();
+				isFinal = false;
+			}
 		}
+	}
+	fin.close();
 
-		//Print program
-		/*cout << "Print program\n";
+	//Print program
+	if (compiled == true) {
+		cout << "Print program\n";
 		for (int i = 0; i < lines.size(); ++i) {
 			for (int j = 0; j < lines[i].size(); ++j) {
-				cout << lines[i][j].content << " Type: ";
-				cout << lines[i][j].type << endl;
+				cout << lines[i][j].content << " ";
+				//cout << lines[i][j].type << endl;
 			}
-			cout << endl;
-		}*/
-
-		/*for (i = 0; i < 6; ++i) {
-			if (ch == operators[i])
-				cout << ch << " is operator\n";
+			cout << ";" << endl;
 		}
-
-		if (isalnum(ch)) {
-			buffer[j++] = ch;
-		}
-		else if ((ch == ' ' || ch == '\n') && (j != 0)) {
-			buffer[j] = '\0';
-			j = 0;
-
-			if (isKeyword(buffer) == 1)
-				cout << buffer << " is keyword\n";
-			else
-				cout << buffer << " is indentifier\n";
-		}*/
-
 	}
 
-	fin.close();
+	/****************************************************** Parser **************************************************/
+
+
+
 
 	return 0;
 }
