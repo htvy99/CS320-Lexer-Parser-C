@@ -18,7 +18,7 @@ int main() {
 	ifstream fin;
 	string s;
 
-	fin.open("test2.txt");
+	fin.open("program.txt");
 	if (!fin.is_open()) {
 		cout << "error while opening the file\n";
 		exit(0);
@@ -28,6 +28,7 @@ int main() {
 	word newWord;
 	bool isFinal = false;
 	bool compiled = true;
+	bool stringMode = false;
 
 	while (!fin.eof()) {
 		while (fin >> newWord.content && compiled == true)
@@ -35,9 +36,17 @@ int main() {
 			//Normalize word
 			vector<string> normalized = normalize(newWord.content, isFinal);
 			for (auto& s : normalized) {
+				//cout << s << endl;
 				newWord.content = s;
-				newWord.type = checkType(s);
-				sentences.push_back(newWord);
+				newWord.type = checkType(s, stringMode);
+				if (newWord.type == 0) {
+					cout << "Compiled error at statement " << lines.size() + 1 << endl;
+					compiled = false;
+					break;
+				}
+				else if (newWord.type != 9) {
+					sentences.push_back(newWord);
+				}
 			}
 			if (isFinal == true) {
 				lines.push_back(sentences);

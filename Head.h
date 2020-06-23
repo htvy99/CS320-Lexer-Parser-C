@@ -23,6 +23,7 @@ public:
 	//6 - lpar (
 	//7 - rpar )
 	//8 - string
+	//9 - curly bracket { } 
 };
 
 static int myOpSize = 20;
@@ -40,9 +41,11 @@ static string myKeyword[58] = { "abstract","and","array()","as","break","callabl
 static regex integer("[0-9]+");
 static regex floatRegex("([-]?[0-9]*\\.[0-9]*)");
 static regex identifier("(\\$[a-zA-Z_][a-zA-Z0-9_]*)");
+static regex startString("\"(.)*");
+static regex endString("(.)*\"");
 
 static vector<word> sentences;
 static vector<vector<word>> lines;
 
 vector<string> normalize(string s, bool& isFinal);
-int checkType(string s);
+int checkType(string s, bool& stringMode);

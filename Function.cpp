@@ -65,7 +65,7 @@ vector<string> normalize(string s, bool& isFinal) {
 	return result;
 }
 
-int checkType(string s) {
+int checkType(string s, bool &stringMode) {
 	//Check keyword
 	for (int i = 0; i < myKwSize; ++i) {
 		if (s == myKeyword[i]) {
@@ -94,11 +94,27 @@ int checkType(string s) {
 		return 2;
 	}
 
+	//Check string
+	if (regex_match(s, startString) | regex_match(s, endString)) {
+		stringMode = true;
+		if (regex_match(s, endString))
+			stringMode = false;
+		return 8;
+	}
+
+	if (stringMode == true)
+		return 8;
+
 	//Check lpar & rpar
 	if (s == "(")
 		return 6;
 	if (s == ")")
 		return 7;
+
+	//Check curly bracket
+	if (s == "{" | s == "}")
+		return 9;
+
 
 	return 0;
 }
