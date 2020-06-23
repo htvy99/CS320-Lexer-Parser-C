@@ -45,4 +45,4 @@ static vector<word> sentences;
 static vector<vector<word>> lines;
 
 vector<string> normalize(string s, bool& isFinal);
-//word checkType(word& newWord)
+int checkType(string s);

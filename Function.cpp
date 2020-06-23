@@ -4,10 +4,8 @@
 vector<string> normalize(string s, bool& isFinal) {
 	int pos = s.length();
 	int op = myOpSize;
-	cout << s << endl;
 
-	//Check if is final word of statement
-	
+	//Check final word of statement
 	if (s.find(';') != std::string::npos) {
 		isFinal = true;
 		s.pop_back();
@@ -25,7 +23,6 @@ vector<string> normalize(string s, bool& isFinal) {
 		if (pos < s.length()-1) {
 			s.insert(pos + 1, " ");
 		}
-		cout << s << endl;
 	}
 	if (s.find(")") != string::npos) {
 		pos = s.find(")");
@@ -38,7 +35,6 @@ vector<string> normalize(string s, bool& isFinal) {
 		if (pos < s.length() - 1) {
 			s.insert(pos + 1, " ");
 		}
-		cout << s << endl;
 	}
 
 	//Check if word contains operation
@@ -59,47 +55,50 @@ vector<string> normalize(string s, bool& isFinal) {
 		if (pos < s.length() - 1) {
 			s.insert(pos + myOp[op].length(), " ");
 		}
-		cout << s << endl;
 	}
 
 	std::istringstream buf(s);
 	std::istream_iterator<std::string> beg(buf), end;
 
 	vector<std::string> result(beg, end); 
-	
-	for (auto& s : result)
-		cout << s << ",";
 
 	return result;
 }
 
-/*word checkType(word& newWord) {
+int checkType(string s) {
 	//Check keyword
-	for (int i = 0; i < keywords->size(); ++i) {
-		if (newWord.content == keywords[i]) {
-			newWord.type = 1;
+	for (int i = 0; i < myKwSize; ++i) {
+		if (s == myKeyword[i]) {
+			return 1;
 		}
 	}
 
 	//Check integer
-	if (regex_match(newWord.content, integer)) {
-		newWord.type = 3;
+	if (regex_match(s, integer)) {
+		return 3;
 	}
 	//Check float
-	if (regex_match(newWord.content, floatRegex)) {
-		newWord.type = 4;
+	if (regex_match(s, floatRegex)) {
+		return 4;
 	}
 
 	//Check operator
-	for (int i = 0; i < operators->size(); ++i) {
-		if (newWord.content == operators[i]) {
-			newWord.type = 5;
+	for (int i = 0; i < myOpSize; ++i) {
+		if (s == myOp[i]) {
+			return 5;
 		}
 	}
 
 	//Check identifier
-	if (regex_match(newWord.content, identifier)) {
-		newWord.type = 2;
+	if (regex_match(s, identifier)) {
+		return 2;
 	}
-	return newWord;
-}*/
+
+	//Check lpar & rpar
+	if (s == "(")
+		return 6;
+	if (s == ")")
+		return 7;
+
+	return 0;
+}
