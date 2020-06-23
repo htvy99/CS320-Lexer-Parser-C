@@ -18,7 +18,7 @@ int main() {
 	ifstream fin;
 	string s;
 
-	fin.open("test.txt");
+	fin.open("test2.txt");
 	if (!fin.is_open()) {
 		cout << "error while opening the file\n";
 		exit(0);
@@ -33,13 +33,13 @@ int main() {
 	while (!fin.eof()) {
 		while (fin >> newWord.content && compiled == true)
 		{
-			if (newWord.content.find(';') != std::string::npos) {
-				isFinal = true;
-				//compiled = true;
-				newWord.content.pop_back();
-			}
+			//Normalize word
+			vector<string> s = normalize(newWord.content, isFinal);
+
+
+
 			//Check lpar (
-			if (newWord.content.find("(") != string::npos) {
+			/*if (newWord.content.find("(") != string::npos) {
 				//push ( into sentence as a separate element
 				par.content = "(";
 				par.type = 6;
@@ -62,18 +62,18 @@ int main() {
 
 			newWord = checkType(newWord);
 
-			if (newWord.type == 0) {
-				/*for (int i = 0; i < operatorSize; ++i) {
-					if (newWord.content.find(operators[i])) {
-
+			/*if (newWord.type == 0) {
+				for (int i = 0; i < operatorSize; ++i) {
+					if (newWord.content.find(operators[i]) != string::npos) {
+						
 					}
-				}*/
+				}
 				cout << "Compiled error\n";
 				compiled = false;
 				break;
-			}
+			}*/
 			
-			sentences.push_back(newWord);
+			/*sentences.push_back(newWord);
 			if (par.content == ")") {
 				sentences.push_back(par);
 			}
@@ -85,13 +85,13 @@ int main() {
 				lines.push_back(sentences);
 				sentences.clear();
 				isFinal = false;
-			}
+			}*/
 		}
 	}
 	fin.close();
 
 	//Print program
-	if (compiled == true) {
+	/*if (compiled == true) {
 		cout << "Print program\n";
 		for (int i = 0; i < lines.size(); ++i) {
 			for (int j = 0; j < lines[i].size(); ++j) {

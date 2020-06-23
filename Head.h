@@ -5,6 +5,8 @@
 #include<ctype.h>
 #include <vector>
 #include <regex>
+#include <sstream>
+#include <iterator>
 
 using namespace std;
 
@@ -23,11 +25,11 @@ public:
 	//8 - string
 };
 
-int operatorSize = 18;
-int keywordSize = 58;
-char operators[18][3] = { "+", "-", "*", "/", "%", "^", "**", "=", "+=", "-=", "*=",
-					"/=", "%=", "<", ">", "==", ">=", "<=" };
-char keywords[58][11] = { "abstract","and","array()","as","break","callable","case",
+static int myOpSize = 20;
+static int myKwSize = 58;
+static string myOp[20]= { "+", "-", "*", "/", "%", "^", "**", "=", "+=", "-=", "*=",
+					"/=", "%=", "<", ">", "==", ">=", "<=", "++", "--"};
+static string myKeyword[58] = { "abstract","and","array()","as","break","callable","case",
 						"catch","class","clone","const","continue","declare","default","die",
 						"do","echo","else","elseif","empty()","endfor",
 						"endif","endswitch","endwhile","eval","exit()",
@@ -35,40 +37,12 @@ char keywords[58][11] = { "abstract","and","array()","as","break","callable","ca
 						"include", "instanceof", "interface", "isset()", "list()",
 						"namespace", "new", "or", "print", "private", "protected", "public", "require", "return", "static",
 						"switch", "throw", "try", "use", "var", "while", "TRUE", "FALSE"};
-regex integer("[0-9]+");
-regex floatRegex("([-]?[0-9]*\\.[0-9]*)");
-regex identifier("(\\$[a-zA-Z_][a-zA-Z0-9_]*)");
+static regex integer("[0-9]+");
+static regex floatRegex("([-]?[0-9]*\\.[0-9]*)");
+static regex identifier("(\\$[a-zA-Z_][a-zA-Z0-9_]*)");
 
 static vector<word> sentences;
-vector<vector<word>> lines;
+static vector<vector<word>> lines;
 
-word checkType(word& newWord) {
-	//Check keyword
-	for (int i = 0; i < keywordSize; ++i) {
-		if (newWord.content == keywords[i]) {
-			newWord.type = 1;
-		}
-	}
-
-	//Check integer
-	if (regex_match(newWord.content, integer)) {
-		newWord.type = 3;
-	}
-	//Check float
-	if (regex_match(newWord.content, floatRegex)) {
-		newWord.type = 4;
-	}
-
-	//Check operator
-	for (int i = 0; i < operatorSize; ++i) {
-		if (newWord.content == operators[i]) {
-			newWord.type = 5;
-		}
-	}
-
-	//Check identifier
-	if (regex_match(newWord.content, identifier)) {
-		newWord.type = 2;
-	}
-	return newWord;
-}
+vector<string> normalize(string s, bool& isFinal);
+//word checkType(word& newWord)
