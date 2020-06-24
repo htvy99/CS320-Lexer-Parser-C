@@ -46,6 +46,8 @@ static regex endString("(.)*\"");
 
 static vector<word> sentences;
 static vector<vector<word>> lines;
+static vector<word> parsed;
+static vector<vector<word>> tree;
 
 vector<string> normalize(string s, bool& isFinal);
 int checkType(string s, bool& stringMode);

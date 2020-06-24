@@ -118,3 +118,4 @@ int checkType(string s, bool &stringMode) {
 
 	return 0;
 }
+
