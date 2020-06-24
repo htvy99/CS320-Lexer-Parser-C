@@ -69,6 +69,11 @@ int main() {
 
 		/****************************************************** Parser **************************************************/
 		for (int i = 0; i < lines.size(); ++i) {
+			int level = 0;
+
+			//Assign priority state to operator
+			assignPriority(lines[i], level);
+
 			//parse each statement
 			myParser(lines[i], 0, lines[i].size(), result);
 			for (int j = 0; j < result.size(); ++j) {

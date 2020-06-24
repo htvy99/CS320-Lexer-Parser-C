@@ -119,38 +119,82 @@ int checkType(string s, bool &stringMode) {
 	return 0;
 }
 
+void assignPriority(vector<word> &statement, int &level) {
+	bool par = false;
+	for (int i = 0; i < statement.size(); ++i) {
+		if (statement[i].type == 6)
+			par = true;
+		if (par == false) {
+			if (statement[i].content == "^")
+				statement[i].priority = 4;
+			if (statement[i].content == "*" | statement[i].content == "/")
+				statement[i].priority = 5;
+			if (statement[i].content == "+" | statement[i].content == "-")
+				statement[i].priority = 6;
+		}
+		else {
+			if (statement[i].content == "^")
+				statement[i].priority = 1;
+			if (statement[i].content == "*" | statement[i].content == "/")
+				statement[i].priority = 2;
+			if (statement[i].content == "+" | statement[i].content == "-") {
+				statement[i].priority = 3;
+				if (level == 0) level++;
+			}
+				
+		}
+		if (statement[i].type == 7)
+			par = false;
+	}
+}
+
+
 //Convert grammar rule into code
 //The factor -> look for an int or a float and return a number node
 //The term -> look for a factor first, if the current token is the mul|div token, we will look for another factor
 
 //Parser function
 void myParser(vector <word> &statement, int start, int end, vector<string> &result) {
+	if (start == end) {
+
+	}
 	for (int i = start; i < end; ++i) {
-		if (statement[i].content == "++") {
-			result.push_back("increase");
-			result.push_back("(id)");
-			//cout << "++";
-		}
-		if (statement[i].content == "=") {
-			result.push_back("assign(");
-			result.push_back("variable,");
-			statement[i].visited = true;
-			statement[i - 1].visited = true;
-			myParser(statement, i - 1, i, result);
-			myParser(statement, i + 1, end, result);
-		}
-		if (statement[i].type == 3 && statement[i].visited==false) {
-			//cout << statement[i].content << endl;
-			result.push_back("int");
-			statement[i].visited = true;
-			if (i == end - 1)
-				result.push_back(")");
-		}
-		if (statement[i].type == 2 && statement[i].visited == false && i >= 2) {
-			result.push_back("variable");
-			statement[i].visited = true;
-			if (i == end - 1)
-				result.push_back(")");
+		if (statement[i].visited == false) {
+			if (statement[i].content == "++") {
+				result.push_back("increase");
+				result.push_back("(id)");
+			}
+			if (statement[i].content == "--") {
+				result.push_back("decrease");
+				result.push_back("(id)");
+			}
+			if (statement[i].content == "=") {
+				result.push_back("assign(");
+				result.push_back("variable,");
+				statement[i].visited = true;
+				statement[i - 1].visited = true;
+				myParser(statement, i + 1, end, result);
+			}
+			if (statement[i].content == "+") {
+				result.push_back("sum(");
+				statement[i].visited = true;
+				myParser(statement, start, i - 1, result);
+				myParser(statement, i + 1, end, result);
+			}
+
+			if (statement[i].type == 3) {
+				//cout << statement[i].content << endl;
+				result.push_back("int");
+				statement[i].visited = true;
+				if (i == end - 1)
+					result.push_back(")");
+			}
+			if (statement[i].type == 2 && i >= 2) {
+				result.push_back("variable");
+				statement[i].visited = true;
+				if (i == end - 1)
+					result.push_back(")");
+			}
 		}
 	}
 }

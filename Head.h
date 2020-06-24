@@ -15,6 +15,7 @@ public:
 	string content;
 	int type;
 	bool visited = false;
+	int priority = 0;
 	//0 - invalid or { or }
 	//1 - keyword
 	//2 - identifier
@@ -62,8 +63,10 @@ static regex endString("(.)*\"");
 static vector<word> sentences;
 static vector<vector<word>> lines;
 static vector <string> result;
+static int level;
 
 
 vector<string> normalize(string s, bool& isFinal);
 int checkType(string s, bool& stringMode);
+void assignPriority(vector<word>& statement, int &level);
 void myParser(vector <word> &statement, int start, int end, vector<string> &result);
