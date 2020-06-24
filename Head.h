@@ -28,20 +28,6 @@ public:
 	//9 - curly bracket { } 
 };
 
-class Node {
-
-};
-
-class intNode {
-};
-
-class operatorNode : Node {
-	Node leftNode;
-	Node rightNode;
-};
-
-
-
 static int myOpSize = 20;
 static int myKwSize = 58;
 static string myOp[20]= { "+", "-", "*", "/", "%", "^", "**", "=", "+=", "-=", "*=",
@@ -62,11 +48,11 @@ static regex endString("(.)*\"");
 
 static vector<word> sentences;
 static vector<vector<word>> lines;
-static vector <string> result;
-static int level;
-
+static vector <string> result;				//after parsing
+static int level;							//highest priority of statement
+static vector <int> type;					//vector of unique operator - sorted in descending order (1-sum	2-mul  3-power)
 
 vector<string> normalize(string s, bool& isFinal);
 int checkType(string s, bool& stringMode);
-void assignPriority(vector<word>& statement, int &level);
-void myParser(vector <word> &statement, int start, int end, int &level, vector<string> &result);
+void assignPriority(vector<word>& statement, int &level, vector<int>& type);
+void myParser(vector <word> &statement, int start, int end, int &level, vector<int> type, vector<string> &result);

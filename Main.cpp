@@ -72,11 +72,11 @@ int main() {
 			int level = 0;			//get highest level of statement
 
 			//Assign priority state to operator
-			assignPriority(lines[i], level);
-			cout << "level = " << level << endl;
+			assignPriority(lines[i], level, type);
+			
 
 			//parse each statement
-			myParser(lines[i], 0, lines[i].size(), level, result);
+			myParser(lines[i], 0, lines[i].size(), level, type, result);
 			cout << endl;
 			for (int j = 0; j < result.size(); ++j) {
 				cout << result[j];

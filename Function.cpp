@@ -119,102 +119,50 @@ int checkType(string s, bool &stringMode) {
 	return 0;
 }
 
-void assignPriority(vector<word> &statement, int &level) {
-	vector <int> type;
+void assignPriority(vector<word> &statement, int &level, vector<int> &type) {
+	int typeID = 0;
 	//vector <int> typeID;   //1-sum	2-mul  3-power
 	//get unique operator in statement
 	for (int i = 0; i < statement.size(); ++i) {
 		if (statement[i].type == 5) {
-			int typeID;
-			if (statement[i].content == "+" | statement[i].content == "-")
+			//cout << "Op " << statement[i].content << endl;
+			if (statement[i].content == "+" | statement[i].content == "-") {
 				typeID = 1;
-			if (statement[i].content == "*" | statement[i].content == "/")
+				statement[i].priority = 1;
+			}
+			if (statement[i].content == "*" | statement[i].content == "/") {
 				typeID = 2;
-			if (statement[i].content == "^")
+				statement[i].priority = 2;
+			}
+			if (statement[i].content == "^") {
 				typeID = 3;
-			if (type.empty())
+				statement[i].priority = 3;
+			}
+		}
+		if (typeID > 0 && typeID < 4) {
+			if (type.empty()) {
 				type.push_back(typeID);
+				//cout << "Push " << typeID << endl;
+			}
 			else {
+				bool exist = false;
 				for (int j = 0; j < type.size(); ++j) {
-					if (typeID != type[j])
-						type.push_back(typeID);
+					if (typeID == type[j]) {
+						exist = true;
+					}
+				}
+				if (!exist) {
+					type.push_back(typeID);
+					//cout << "Push " << typeID << endl;
 				}
 			}
 		}
-
-
-
-		/*if (statement[i].content == "^") {
-			switch (level)
-			{
-			case 1: {
-				level = 2;
-				statement[i].priority = 2;
-				break;
-			}
-			case 2: {
-				level = 3;
-				statement[i].priority = 3;
-				break;
-			}
-			default: {
-				level = 1;
-				statement[i].priority = 1;
-				break;
-			}
-			}
-		}
-			statement[i].priority = 1;
-		if (statement[i].content == "*" | statement[i].content == "/") {
-			switch (level)
-			{
-			case 1: {
-				level = 2;
-				statement[i].priority = 2;
-				break;
-			}
-			default: {
-				level = 1;
-				statement[i].priority = 1;
-				break;
-			}
-			}
-		}
-		if (statement[i].content == "+" | statement[i].content == "-") {
-			if (level == 0) {
-				statement[i].priority = 1;
-				level = 1;
-			}
-			
-		}*/
 	}
-	
-	/*bool par = false;
-	for (int i = 0; i < statement.size(); ++i) {
-		if (statement[i].type == 6)
-			par = true;
-		if (par == false) {
-			if (statement[i].content == "^")
-				statement[i].priority = 4;
-			if (statement[i].content == "*" | statement[i].content == "/")
-				statement[i].priority = 5;
-			if (statement[i].content == "+" | statement[i].content == "-")
-				statement[i].priority = 6;
-		}
-		else {
-			if (statement[i].content == "^")
-				statement[i].priority = 1;
-			if (statement[i].content == "*" | statement[i].content == "/")
-				statement[i].priority = 2;
-			if (statement[i].content == "+" | statement[i].content == "-") {
-				statement[i].priority = 3;
-				if (level == 0) level++;
-			}
-				
-		}
-		if (statement[i].type == 7)
-			par = false;
-	}*/
+	//Sort type array in descending order --> ^ * +
+	sort(type.begin(), type.end(), greater<int>());
+	level = type.size() - 1;
+	//cout << "level = " << level << endl;
+
 }
 
 
@@ -223,8 +171,9 @@ void assignPriority(vector<word> &statement, int &level) {
 //The term -> look for a factor first, if the current token is the mul|div token, we will look for another factor
 
 //Parser function
-void myParser(vector <word> &statement, int start, int end, int &currentlevel, vector<string> &result) {
-	//cout << start << " " << end << endl;
+void myParser(vector <word> &statement, int start, int end, int &currentlevel, vector<int> type, vector<string> &result) {
+	cout << start << " " << end << endl;
+	cout << "level = " << currentlevel << endl;
 	if (start == end || start == end - 1) {
 		//push terminal here
 		if (statement[start].type == 3) {
@@ -240,7 +189,7 @@ void myParser(vector <word> &statement, int start, int end, int &currentlevel, v
 		}
 	}
 	for (int i = start; i < end; ++i) {
-		//cout << "\nCheck " << statement[i].content;
+		cout << "\nCheck " << statement[i].content;
 		if (statement[i].visited == false) {
 			if (statement[i].content == "++") {
 				result.push_back("increase");
@@ -256,44 +205,41 @@ void myParser(vector <word> &statement, int start, int end, int &currentlevel, v
 				result.push_back("variable,");
 				statement[i].visited = true;
 				statement[i - 1].visited = true;
-				myParser(statement, i + 1, end, currentlevel, result);
+				myParser(statement, i + 1, end, currentlevel, type, result);
 			}
-			if (statement[i].content == "+" && currentlevel == statement[i].priority) {
+			if (statement[i].content == "+" && type[currentlevel] == statement[i].priority) {
 				cout << " Push sum \n";
 				result.push_back("sum(");
 				statement[i].visited = true;
-				myParser(statement, start, i - 1, currentlevel, result);
-				result.push_back(",");
-				myParser(statement, i + 1, end, currentlevel, result);
-				result.push_back(")");
 				--currentlevel;
+				myParser(statement, start, i, currentlevel, type, result);
+				result.push_back(","); 
+				myParser(statement, i + 1, end, currentlevel, type, result);
+				result.push_back(")");
+				
 			}
-			if (statement[i].content == "*" && currentlevel == statement[i].priority) {
+			if (statement[i].content == "*" && type[currentlevel] == statement[i].priority) {
 				cout << " Push mul \n";
 				result.push_back("mul(");
 				statement[i].visited = true;
-				myParser(statement, start, i - 1, currentlevel, result);
+				--currentlevel;
+				myParser(statement, start, i, currentlevel, type, result);
 				result.push_back(",");
-				myParser(statement, i + 1, end, currentlevel, result);
+				myParser(statement, i + 1, end, currentlevel, type, result);
 				result.push_back(")");
 				--currentlevel;
 			}
-			
-			/*if (statement[i].type == 3) {
-				//cout << statement[i].content << endl;
-				cout << " Push int \n";
-				result.push_back("int");
+			if (statement[i].content == "^" && type[currentlevel] == statement[i].priority) {
+				cout << " Push power \n";
+				result.push_back("power(");
 				statement[i].visited = true;
-				if (i == end - 1)
-					result.push_back(")");
+				--currentlevel;
+				myParser(statement, start, i, currentlevel, type, result);
+				result.push_back(",");
+				myParser(statement, i + 1, end, currentlevel, type, result);
+				result.push_back(")");
+				--currentlevel;
 			}
-			if (statement[i].type == 2 && i >= 2) {
-				cout << " Push variable \n";
-				result.push_back("variable");
-				statement[i].visited = true;
-				if (i == end - 1)
-					result.push_back(")");
-			}*/
 		}
 	}
 }
