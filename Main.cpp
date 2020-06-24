@@ -18,7 +18,7 @@ int main() {
 	ifstream fin;
 	string s;
 
-	fin.open("main.txt");
+	fin.open("single.txt");
 	if (!fin.is_open()) {
 		cout << "error while opening the file\n";
 		exit(0);
@@ -69,13 +69,14 @@ int main() {
 
 		/****************************************************** Parser **************************************************/
 		for (int i = 0; i < lines.size(); ++i) {
-			int level = 0;
+			int level = 0;			//get highest level of statement
 
 			//Assign priority state to operator
 			assignPriority(lines[i], level);
+			cout << "level = " << level << endl;
 
 			//parse each statement
-			myParser(lines[i], 0, lines[i].size(), result);
+			myParser(lines[i], 0, lines[i].size(), level, result);
 			cout << endl;
 			for (int j = 0; j < result.size(); ++j) {
 				cout << result[j];

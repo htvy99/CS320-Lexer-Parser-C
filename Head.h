@@ -69,4 +69,4 @@ static int level;
 vector<string> normalize(string s, bool& isFinal);
 int checkType(string s, bool& stringMode);
 void assignPriority(vector<word>& statement, int &level);
-void myParser(vector <word> &statement, int start, int end, vector<string> &result);
+void myParser(vector <word> &statement, int start, int end, int &level, vector<string> &result);

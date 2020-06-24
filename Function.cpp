@@ -120,7 +120,76 @@ int checkType(string s, bool &stringMode) {
 }
 
 void assignPriority(vector<word> &statement, int &level) {
-	bool par = false;
+	vector <int> type;
+	//vector <int> typeID;   //1-sum	2-mul  3-power
+	//get unique operator in statement
+	for (int i = 0; i < statement.size(); ++i) {
+		if (statement[i].type == 5) {
+			int typeID;
+			if (statement[i].content == "+" | statement[i].content == "-")
+				typeID = 1;
+			if (statement[i].content == "*" | statement[i].content == "/")
+				typeID = 2;
+			if (statement[i].content == "^")
+				typeID = 3;
+			if (type.empty())
+				type.push_back(typeID);
+			else {
+				for (int j = 0; j < type.size(); ++j) {
+					if (typeID != type[j])
+						type.push_back(typeID);
+				}
+			}
+		}
+
+
+
+		/*if (statement[i].content == "^") {
+			switch (level)
+			{
+			case 1: {
+				level = 2;
+				statement[i].priority = 2;
+				break;
+			}
+			case 2: {
+				level = 3;
+				statement[i].priority = 3;
+				break;
+			}
+			default: {
+				level = 1;
+				statement[i].priority = 1;
+				break;
+			}
+			}
+		}
+			statement[i].priority = 1;
+		if (statement[i].content == "*" | statement[i].content == "/") {
+			switch (level)
+			{
+			case 1: {
+				level = 2;
+				statement[i].priority = 2;
+				break;
+			}
+			default: {
+				level = 1;
+				statement[i].priority = 1;
+				break;
+			}
+			}
+		}
+		if (statement[i].content == "+" | statement[i].content == "-") {
+			if (level == 0) {
+				statement[i].priority = 1;
+				level = 1;
+			}
+			
+		}*/
+	}
+	
+	/*bool par = false;
 	for (int i = 0; i < statement.size(); ++i) {
 		if (statement[i].type == 6)
 			par = true;
@@ -145,7 +214,7 @@ void assignPriority(vector<word> &statement, int &level) {
 		}
 		if (statement[i].type == 7)
 			par = false;
-	}
+	}*/
 }
 
 
@@ -154,7 +223,7 @@ void assignPriority(vector<word> &statement, int &level) {
 //The term -> look for a factor first, if the current token is the mul|div token, we will look for another factor
 
 //Parser function
-void myParser(vector <word> &statement, int start, int end, vector<string> &result) {
+void myParser(vector <word> &statement, int start, int end, int &currentlevel, vector<string> &result) {
 	//cout << start << " " << end << endl;
 	if (start == end || start == end - 1) {
 		//push terminal here
@@ -187,16 +256,27 @@ void myParser(vector <word> &statement, int start, int end, vector<string> &resu
 				result.push_back("variable,");
 				statement[i].visited = true;
 				statement[i - 1].visited = true;
-				myParser(statement, i + 1, end, result);
+				myParser(statement, i + 1, end, currentlevel, result);
 			}
-			if (statement[i].content == "+") {
+			if (statement[i].content == "+" && currentlevel == statement[i].priority) {
 				cout << " Push sum \n";
 				result.push_back("sum(");
 				statement[i].visited = true;
-				myParser(statement, start, i - 1, result);
+				myParser(statement, start, i - 1, currentlevel, result);
 				result.push_back(",");
-				myParser(statement, i + 1, end, result);
+				myParser(statement, i + 1, end, currentlevel, result);
 				result.push_back(")");
+				--currentlevel;
+			}
+			if (statement[i].content == "*" && currentlevel == statement[i].priority) {
+				cout << " Push mul \n";
+				result.push_back("mul(");
+				statement[i].visited = true;
+				myParser(statement, start, i - 1, currentlevel, result);
+				result.push_back(",");
+				myParser(statement, i + 1, end, currentlevel, result);
+				result.push_back(")");
+				--currentlevel;
 			}
 			
 			/*if (statement[i].type == 3) {
