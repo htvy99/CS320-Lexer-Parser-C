@@ -155,10 +155,23 @@ void assignPriority(vector<word> &statement, int &level) {
 
 //Parser function
 void myParser(vector <word> &statement, int start, int end, vector<string> &result) {
-	if (start == end) {
-
+	//cout << start << " " << end << endl;
+	if (start == end || start == end - 1) {
+		//push terminal here
+		if (statement[start].type == 3) {
+			//cout << statement[i].content << endl;
+			cout << " Push int \n";
+			result.push_back("int");
+			statement[start].visited = true;
+		}
+		if (statement[start].type == 2) {
+			cout << " Push variable \n";
+			result.push_back("variable");
+			statement[start].visited = true;
+		}
 	}
 	for (int i = start; i < end; ++i) {
+		//cout << "\nCheck " << statement[i].content;
 		if (statement[i].visited == false) {
 			if (statement[i].content == "++") {
 				result.push_back("increase");
@@ -169,6 +182,7 @@ void myParser(vector <word> &statement, int start, int end, vector<string> &resu
 				result.push_back("(id)");
 			}
 			if (statement[i].content == "=") {
+				cout << " Push assign variable \n";
 				result.push_back("assign(");
 				result.push_back("variable,");
 				statement[i].visited = true;
@@ -176,25 +190,30 @@ void myParser(vector <word> &statement, int start, int end, vector<string> &resu
 				myParser(statement, i + 1, end, result);
 			}
 			if (statement[i].content == "+") {
+				cout << " Push sum \n";
 				result.push_back("sum(");
 				statement[i].visited = true;
 				myParser(statement, start, i - 1, result);
+				result.push_back(",");
 				myParser(statement, i + 1, end, result);
+				result.push_back(")");
 			}
-
-			if (statement[i].type == 3) {
+			
+			/*if (statement[i].type == 3) {
 				//cout << statement[i].content << endl;
+				cout << " Push int \n";
 				result.push_back("int");
 				statement[i].visited = true;
 				if (i == end - 1)
 					result.push_back(")");
 			}
 			if (statement[i].type == 2 && i >= 2) {
+				cout << " Push variable \n";
 				result.push_back("variable");
 				statement[i].visited = true;
 				if (i == end - 1)
 					result.push_back(")");
-			}
+			}*/
 		}
 	}
 }

@@ -18,7 +18,7 @@ int main() {
 	ifstream fin;
 	string s;
 
-	fin.open("test.txt");
+	fin.open("main.txt");
 	if (!fin.is_open()) {
 		cout << "error while opening the file\n";
 		exit(0);
@@ -76,6 +76,7 @@ int main() {
 
 			//parse each statement
 			myParser(lines[i], 0, lines[i].size(), result);
+			cout << endl;
 			for (int j = 0; j < result.size(); ++j) {
 				cout << result[j];
 			}
