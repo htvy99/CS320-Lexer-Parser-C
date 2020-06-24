@@ -119,3 +119,38 @@ int checkType(string s, bool &stringMode) {
 	return 0;
 }
 
+//Convert grammar rule into code
+//The factor -> look for an int or a float and return a number node
+//The term -> look for a factor first, if the current token is the mul|div token, we will look for another factor
+
+//Parser function
+void myParser(vector <word> &statement, int start, int end, vector<string> &result) {
+	for (int i = start; i < end; ++i) {
+		if (statement[i].content == "++") {
+			result.push_back("increase");
+			result.push_back("(id)");
+			//cout << "++";
+		}
+		if (statement[i].content == "=") {
+			result.push_back("assign(");
+			result.push_back("variable,");
+			statement[i].visited = true;
+			statement[i - 1].visited = true;
+			myParser(statement, i - 1, i, result);
+			myParser(statement, i + 1, end, result);
+		}
+		if (statement[i].type == 3 && statement[i].visited==false) {
+			//cout << statement[i].content << endl;
+			result.push_back("int");
+			statement[i].visited = true;
+			if (i == end - 1)
+				result.push_back(")");
+		}
+		if (statement[i].type == 2 && statement[i].visited == false && i >= 2) {
+			result.push_back("variable");
+			statement[i].visited = true;
+			if (i == end - 1)
+				result.push_back(")");
+		}
+	}
+}

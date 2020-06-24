@@ -14,6 +14,7 @@ class word {
 public:
 	string content;
 	int type;
+	bool visited = false;
 	//0 - invalid or { or }
 	//1 - keyword
 	//2 - identifier
@@ -25,6 +26,20 @@ public:
 	//8 - string
 	//9 - curly bracket { } 
 };
+
+class Node {
+
+};
+
+class intNode {
+};
+
+class operatorNode : Node {
+	Node leftNode;
+	Node rightNode;
+};
+
+
 
 static int myOpSize = 20;
 static int myKwSize = 58;
@@ -46,8 +61,9 @@ static regex endString("(.)*\"");
 
 static vector<word> sentences;
 static vector<vector<word>> lines;
-static vector<word> parsed;
-static vector<vector<word>> tree;
+static vector <string> result;
+
 
 vector<string> normalize(string s, bool& isFinal);
 int checkType(string s, bool& stringMode);
+void myParser(vector <word> &statement, int start, int end, vector<string> &result);
