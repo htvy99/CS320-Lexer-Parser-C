@@ -16,6 +16,10 @@ public:
 	int type;
 	bool visited = false;
 	int priority = 0;
+	bool leftAsso = false;
+	bool isOp = false;
+	bool isLeftpar = false;
+	bool isRightpar = false;
 	//0 - invalid or { or }
 	//1 - keyword
 	//2 - identifier
@@ -48,6 +52,7 @@ static regex endString("(.)*\"");
 
 static vector<word> sentences;
 static vector<vector<word>> lines;
+static vector<word> op;						//operator stack 
 static vector <string> result;				//after parsing
 static int level;							//highest priority of statement
 static vector <int> type;					//vector of unique operator - sorted in descending order (1-sum	2-mul  3-power)
@@ -55,4 +60,5 @@ static vector <int> type;					//vector of unique operator - sorted in descending
 vector<string> normalize(string s, bool& isFinal);
 int checkType(string s, bool& stringMode);
 void assignPriority(vector<word>& statement, int &level, vector<int>& type);
-void myParser(vector <word> &statement, int start, int end, int &level, vector<int> type, vector<string> &result);
+//void myParser(vector <word> &statement, int start, int end, int &level, vector<int> type, vector<string> &result);
+void myParser(vector <word>& statement, vector <string>& result, vector<word> &op);

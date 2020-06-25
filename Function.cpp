@@ -130,14 +130,30 @@ void assignPriority(vector<word> &statement, int &level, vector<int> &type) {
 			if (statement[i].content == "+" | statement[i].content == "-") {
 				typeID = 1;
 				statement[i].priority = 1;
+				statement[i].leftAsso = true;
+				statement[i].isOp = true;
 			}
 			if (statement[i].content == "*" | statement[i].content == "/") {
 				typeID = 2;
 				statement[i].priority = 2;
+				statement[i].leftAsso = true;
+				statement[i].isOp = true;
 			}
 			if (statement[i].content == "^") {
 				typeID = 3;
 				statement[i].priority = 3;
+				statement[i].leftAsso = false;
+				statement[i].isOp = true;
+			}
+			if (statement[i].content == "(") {
+				//typeID = 3;
+				//statement[i].priority = 4;
+				statement[i].isLeftpar = true;
+			}
+			if (statement[i].content == ")") {
+				//typeID = 3;
+				//statement[i].priority = 4;
+				statement[i].isRightpar = true;
 			}
 		}
 		if (typeID > 0 && typeID < 4) {
@@ -179,14 +195,14 @@ void assignPriority(vector<word> &statement, int &level, vector<int> &type) {
 //The term -> look for a factor first, if the current token is the mul|div token, we will look for another factor
 
 //Parser function
-void myParser(vector <word> &statement, int start, int end, int &currentlevel, vector<int> type, vector<string> &result) {
-	//cout << start << " " << end << endl;
+/*void myParser(vector <word> &statement, int start, int end, int &currentlevel, vector<int> type, vector<string> &result) {
+	cout << start << " " << end << endl;
 	//cout << "level = " << currentlevel << endl;
 	if (start == end || start == end - 1) {
 		//push terminal here
 		if (statement[start].type == 3) {
 			//cout << statement[i].content << endl;
-			cout << " Push int \n";
+			cout << " = Push int \n";
 			result.push_back("int");
 			statement[start].visited = true;
 		}
@@ -197,7 +213,8 @@ void myParser(vector <word> &statement, int start, int end, int &currentlevel, v
 		}
 	}
 	for (int i = start; i < end; ++i) {
-		cout << "\nCheck " << statement[i].content;
+		cout << "\nCheck " << statement[i].content << " ";
+		cout << "i = " << i << endl;
 		if (statement[i].visited == false) {
 			if (statement[i].content == "++") {
 				result.push_back("increase");
@@ -208,6 +225,7 @@ void myParser(vector <word> &statement, int start, int end, int &currentlevel, v
 				result.push_back("(id)");
 			}
 			if (statement[i].content == "=") {
+
 				cout << " Push assign variable \n";
 				result.push_back("assign(");
 				result.push_back("variable,");
@@ -250,5 +268,45 @@ void myParser(vector <word> &statement, int start, int end, int &currentlevel, v
 				--currentlevel;
 			}
 		}
+	}
+}*/
+
+void myParser(vector <word>& statement, vector <string>& result, vector<word> &op)
+{
+	for (int i = 0; i < statement.size(); ++i) {
+		switch (statement[i].type)
+		{
+		case 2: {result.push_back("variable "); break; };
+		case 3: {result.push_back("int "); break; };
+		case 4: {result.push_back("float "); break; };
+		default:
+			break;
+		}
+		if (statement[i].isOp) {
+			while (!op.empty() &&
+				(op[op.size() - 1].priority > statement[i].priority |
+					(op[op.size() - 1].priority == statement[i].priority && statement[i].leftAsso == true))
+				&& op[op.size() - 1].priority != 4) {
+				result.push_back(op[op.size() - 1].content);
+				op.pop_back();
+			}
+			op.push_back(statement[i]);
+		}
+		else if (statement[i].isLeftpar) {
+			op.push_back(statement[i]);
+		}
+		else if (statement[i].isRightpar) {
+			while (!op[op.size() - 1].isLeftpar) {
+				result.push_back(op[op.size() - 1].content);
+				op.pop_back();
+			}
+			if (op[op.size() - 1].isLeftpar) {
+				op.pop_back();
+			}
+		}
+	}
+	while (!op.empty()) {
+		result.push_back(op[op.size() - 1].content);
+		op.pop_back();
 	}
 }

@@ -40,6 +40,7 @@ int main() {
 				newWord.type = checkType(s, stringMode);
 				if (newWord.type == 0) {
 					cout << "Compiled error at statement " << lines.size() + 1 << endl;
+					cout << "Error at " << newWord.content << endl;
 					compiled = false;
 					break;
 				}
@@ -76,13 +77,15 @@ int main() {
 			
 
 			//parse each statement
-			myParser(lines[i], 0, lines[i].size(), level, type, result);
+			//myParser(lines[i], 0, lines[i].size(), level, type, result);
+			myParser(lines[i], result, op);
 			cout << endl;
 			for (int j = 0; j < result.size(); ++j) {
 				cout << result[j];
 			}
 			cout << endl;
 			result.clear();
+			op.clear();
 		}
 		
 
