@@ -124,6 +124,7 @@ void assignPriority(vector<word> &statement, int &level, vector<int> &type) {
 	//vector <int> typeID;   //1-sum	2-mul  3-power
 	//get unique operator in statement
 	for (int i = 0; i < statement.size(); ++i) {
+		typeID = 0;
 		if (statement[i].type == 5) {
 			//cout << "Op " << statement[i].content << endl;
 			if (statement[i].content == "+" | statement[i].content == "-") {
@@ -140,7 +141,9 @@ void assignPriority(vector<word> &statement, int &level, vector<int> &type) {
 			}
 		}
 		if (typeID > 0 && typeID < 4) {
-			if (type.empty()) {
+			//cout << "Push " << statement[i].content << " ";
+			type.push_back(typeID);
+			/*if (type.empty()) {
 				type.push_back(typeID);
 				//cout << "Push " << typeID << endl;
 			}
@@ -155,13 +158,18 @@ void assignPriority(vector<word> &statement, int &level, vector<int> &type) {
 					type.push_back(typeID);
 					//cout << "Push " << typeID << endl;
 				}
-			}
+			}*/
 		}
 	}
 	//Sort type array in descending order --> ^ * +
 	sort(type.begin(), type.end(), greater<int>());
 	level = type.size() - 1;
 	//cout << "level = " << level << endl;
+	/*cout << "Type ";
+	for (int i = 0; i < type.size(); ++i) {
+		cout << type[i] << " ";
+	}
+	cout << endl;*/
 
 }
 
@@ -172,8 +180,8 @@ void assignPriority(vector<word> &statement, int &level, vector<int> &type) {
 
 //Parser function
 void myParser(vector <word> &statement, int start, int end, int &currentlevel, vector<int> type, vector<string> &result) {
-	cout << start << " " << end << endl;
-	cout << "level = " << currentlevel << endl;
+	//cout << start << " " << end << endl;
+	//cout << "level = " << currentlevel << endl;
 	if (start == end || start == end - 1) {
 		//push terminal here
 		if (statement[start].type == 3) {
@@ -206,6 +214,8 @@ void myParser(vector <word> &statement, int start, int end, int &currentlevel, v
 				statement[i].visited = true;
 				statement[i - 1].visited = true;
 				myParser(statement, i + 1, end, currentlevel, type, result);
+				//result.push_back("variable,");
+				result.push_back(")");
 			}
 			if (statement[i].content == "+" && type[currentlevel] == statement[i].priority) {
 				cout << " Push sum \n";
@@ -216,7 +226,6 @@ void myParser(vector <word> &statement, int start, int end, int &currentlevel, v
 				result.push_back(","); 
 				myParser(statement, i + 1, end, currentlevel, type, result);
 				result.push_back(")");
-				
 			}
 			if (statement[i].content == "*" && type[currentlevel] == statement[i].priority) {
 				cout << " Push mul \n";

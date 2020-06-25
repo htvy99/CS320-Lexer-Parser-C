@@ -1,7 +1,6 @@
-﻿  Function.cpp
-C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Function.cpp(23,11): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Function.cpp(35,11): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Function.cpp(55,11): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Function.cpp(126,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Function.cpp(149,23): warning C4018: '<': signed/unsigned mismatch
+﻿  Main.cpp
+C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Main.cpp(62,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Main.cpp(63,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Main.cpp(71,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Lexer\Main.cpp(81,22): warning C4018: '<': signed/unsigned mismatch
   Lexer.vcxproj -> C:\Users\Vy Huynh\OneDrive - VNU-HCMUS\APCS\Third Year\Term 2\CS320 - Principle\Lexer\Debug\Lexer.exe
